@@ -1,0 +1,28 @@
+{
+  "name": "sequence-viz-demo",
+  "version": "0.0.0",
+  "authors": [
+    "Sigfried Gold <sgold@s-3.com>"
+  ],
+  "description": "html files to show sequence-viz at work",
+  "main": "lifeflow.html",
+  "keywords": [
+    "lifeflow",
+    "temporal"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "nvd3": "~1.1.15-beta",
+    "sequence-viz": "~0.0.2",
+    "jQuery-contextMenu": "https://github.com/medialize/jQuery-contextMenu.git#~1.6.5",
+    "underscore-unchained": "~0.1.1",
+    "momentjs": "~2.5.0"
+  }
+}
