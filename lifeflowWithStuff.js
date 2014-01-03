@@ -32,6 +32,8 @@ nv.models.lifeflow = function () {
         , x = d3.scale.linear()
         , y = d3.scale.linear()
         , relativeX 
+        , xAxis = nv.models.axis()
+        , yAxis = nv.models.axis()
         , color = nv.utils.defaultColor()
         , dispatch = d3.dispatch('chartClick', 'elementClick', 
                 'elementDblClick', 'elementMouseover', 'elementMouseout',
@@ -50,26 +52,23 @@ nv.models.lifeflow = function () {
             if (!timelineData) timelineData = edata.timelines(data);
             var lifeflowNodes;
             if (chart.alignBy() === 'Start' || !chart.alignBy()) {
-                var startRecs = _.chain(timelineData)
+                var startRecs = timelineData
                                     .pluck('records')
-                                    .map(_.first)
-                                    .value();
+                                    .map(_.first);
                 lifeflowNodes = makeLifeflowNodes(startRecs,
                     function(d) { return d.next() });
                 //lifeflowNodes.shift();
             } else if (chart.alignBy() === 'End') {
-                var startRecs = _.chain(timelineData)
+                var startRecs = timelineData
                                     .pluck('records')
-                                    .map(_.last)
-                                    .value();
+                                    .map(_.last);
                 lifeflowNodes = makeLifeflowNodes(startRecs,
                     function(d) { return d.prev() });
             } else {
-                var startRecs = _.chain(timelineData.data())
+                var startRecs = timelineData.data()
                                     .filter(function(d) {
                                         return d[eventNameProp] === chart.alignBy() 
-                                    })
-                                    .value();
+                                    });
                 var lifeflowNodesRight = makeLifeflowNodes(startRecs,
                     function(d) { return d.next() });
                 var lifeflowNodesLeft = makeLifeflowNodes(startRecs,
@@ -77,6 +76,42 @@ nv.models.lifeflow = function () {
                 //lifeflowNodesLeft = [];
                 lifeflowNodes = lifeflowNodesLeft.concat(lifeflowNodesRight);
             }
+            var timelineDurations = timelineData
+                .map(function(d) {
+                    return moment.duration(
+                        d.records.last().moment - 
+                        d.records.first().moment);
+                });
+
+            moment.lang('en', {
+                    relativeTime : {
+                                future: "%s",
+                    past:   "%s",
+                    s:  "second",
+                    m:  "second",
+                    mm: "minute",
+                    h:  "minute",
+                    hh: "hour",
+                    d:  "hour",
+                    dd: "day",
+                    M:  "day",
+                    MM: "month",
+                    y:  "month",
+                    yy: "year"
+                    }
+            });
+            x.domain([_.min(timelineDurations),_.max(timelineDurations)]);
+            var axisUnits = moment
+                .duration(x.domain()[1] - x.domain()[0])
+                .humanize();
+            var axisScale = d3.scale.linear()
+                .range(x.range())
+                .domain([
+                    moment.duration(x.domain()[0]).get(axisUnits),
+                    moment.duration(x.domain()[1]).get(axisUnits)]);
+            xAxis.scale(axisScale);
+            //xAxis.scale(x);
+            /*
             x.domain([
                             d3.min([0].concat(lifeflowNodes.map(function(d) { 
                                 return d.x + d.dx
@@ -85,6 +120,7 @@ nv.models.lifeflow = function () {
                                 return d.x + d.dx 
                             })))
                         ]);
+                        */
             relativeX = d3.scale.linear()
                                 .range(x.range())
                                 .domain([0, x.domain()[1] - x.domain()[0]]);
@@ -401,8 +437,8 @@ return;
                     .transition().duration(700)
                     .attr('opacity', 0.4);
                     */
-                console.log('mouse over ' + nodesWithDistributionsShowing.length);
-                console.log(nodesWithDistributionsShowing);
+                //console.log('mouse over ' + nodesWithDistributionsShowing.length);
+                //console.log(nodesWithDistributionsShowing);
                 var alreadyDisplayed = false;
                 _(nodesWithDistributionsShowing).each(function(d) {
                     if (d === lfnode) {
@@ -477,7 +513,8 @@ return;
                                 return {
                                     key: rec.eventName(),
     // with momentjs for dates, might not want d3.format here anyway
-                                    value: fmt(rec.startDate().toDate()),
+                                    //value: fmt(rec.startDate().toDate()),
+                                    value: rec.moment[axisUnits](),
                                     color: color(rec.eventName())
                                 }
                             }),
@@ -684,6 +721,11 @@ return;
     chart.xAxis = function (_) {
         if (!arguments.length) return xAxis;
         xAxis = _;
+        return chart;
+    };
+    chart.yAxis = function (_) {
+        if (!arguments.length) return yAxis;
+        yAxis = _;
         return chart;
     };
     chart.evtData = function (_) {

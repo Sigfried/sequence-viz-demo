@@ -3,8 +3,6 @@ nv.models.lifeflowChart = function () {
     // Public Variables with Default Settings
     //------------------------------------------------------------
     var lifeflow = nv.models.lifeflow(),
-        xAxis = nv.models.axis(),
-        yAxis = nv.models.axis(),
         tip = nv.models.tooltip().gravity('w').distance(23),
         legendHeight = 15,
         hideLegend = nv.models.legend()
@@ -216,7 +214,7 @@ nv.models.lifeflowChart = function () {
             svgHead.select('g.align-legend')
                 .data([lifeflow.alignChoices()])
                 .call(alignLegend);
-            yAxis
+            lifeflow.yAxis()
                 .orient('left')
                 .tickPadding(5)
                 .highlightZero(false)
@@ -224,17 +222,17 @@ nv.models.lifeflowChart = function () {
                 .tickFormat(d3.format('5,'))
             //.tickFormat(function(d) { return d })
             ;
-            xAxis
+            lifeflow.xAxis()
                 .orient('top')
                 .tickPadding(15)
                 .highlightZero(false)
                 .showMaxMin(false)
                 .tickFormat(d3.format('5,'))
 
-            yAxis.scale(lifeflow.yScale())
+            lifeflow.yAxis().scale(lifeflow.yScale())
                 .ticks(chartGraphHeight / 24)
                 .tickSize(-chartFullWidth, 0);
-            xAxis.scale(lifeflow.xScale())
+            lifeflow.xAxis()//.scale(lifeflow.xScale())
                 .ticks(chartGraphWidth / 55)
                 .tickSize(-chartGraphHeight, 0)
 
@@ -242,7 +240,7 @@ nv.models.lifeflowChart = function () {
                 .duration(2000)
                 .each(function() {
                     svgChart.select('.nv-y.nv-axis')
-                    .call(yAxis);
+                    .call(lifeflow.yAxis());
                 });
             var yTicks = svgChart.select('.nv-y.nv-axis').selectAll('g');
             yTicks
@@ -251,7 +249,7 @@ nv.models.lifeflowChart = function () {
 
             svgChart.select('.nv-x.nv-axis')
                 .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-                .call(xAxis);
+                .call(lifeflow.xAxis());
             //------------------------------------------------------------
 
 
@@ -490,10 +488,8 @@ nv.models.lifeflowChart = function () {
     chart.dispatch = dispatch;
     chart.lifeflow = lifeflow;
     //chart.legend = legend;
-    chart.yAxis = yAxis;
-    chart.xAxis = xAxis;
 
-    d3.rebind(chart, lifeflow, 'clipEdge', 'id', 'delay', 'showValues', 'valueFormat', 'barColor', 'entityIdProp', 'eventNameProp', 'eventOrder', 'startDateProp', 'endDateField', 'defaultDuration', 'color', 'eventNames', 'alignBy', 'xAxis','unitProp');
+    d3.rebind(chart, lifeflow, 'clipEdge', 'id', 'delay', 'showValues', 'valueFormat', 'barColor', 'entityIdProp', 'eventNameProp', 'eventOrder', 'startDateProp', 'endDateField', 'defaultDuration', 'color', 'eventNames', 'alignBy', 'xAxis','yAxis','unitProp');
     chart.margin = function (_) {
         if (!arguments.length) return margin;
         margin.top = typeof _.top != 'undefined' ? _.top : margin.top;
