@@ -1,0 +1,95 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Language" content="en-US" >
+</head>
+<body>
+    <style>
+       .axis {
+            shape-rendering: crispEdges;
+        }
+        .x.axis line {
+            stroke: #ccc;
+        }
+        .x.axis .minor {
+            stroke-opacity: .5;
+        }
+        .x.axis path {
+            display: none;
+        }
+/*
+        .bar {
+            fill: steelblue;
+        }
+*/
+        text {
+            color: black;
+        }
+        svg { height: auto; }
+    </style>
+    <script type="text/javascript" src="./bower_components/d3/d3.js"></script>
+    <script type="text/javascript" src="./bower_components/underscore/underscore.js"></script>
+    <script src="./bower_components/1670507/underscoreAddon.js"></script>
+    <!-- TEMPORARILY GRAB LOCAL FOR CONVENIENCE WHILE DEVELOPING
+
+    <script type="text/javascript" src="./bower_components/underscore-unchained/src/underscore-unchained.js"></script>
+
+    <script src="./bower_components/sequence-viz/evtData.js"></script>
+    <script src="./bower_components/sequence-viz/lifeflow.js"></script>
+    <script src="./bower_components/sequence-viz/timelines.js"></script>
+    <script src="./bower_components/sequence-viz/lifeflowChart.js"></script>
+    <script src="./bower_components/sequence-viz/nv.models.legend.js"></script>
+
+    <script type="text/javascript" src="./bower_components/supergroup/supergroup.js"></script>
+    <script src="./../supergroup_GIT_REPO_BEFORE_TRASHING/supergroup.js"></script>
+    <script src="./../enlightened-data/enlightened-data.js"></script>
+    _.mixin({supergroup: enlightenedData.group});
+    <script type="text/javascript" src="./../supergroup/supergroup.js"></script>
+    -->
+    <script type="text/javascript" src="./../underscore-unchained/src/underscore-unchained.js"></script>
+    <script type="text/javascript" src="./../supergroup/supergroup.js"></script>
+
+    <script src="./../sequence-viz/evtData.js"></script>
+    <script src="./../sequence-viz/lifeflowData.js"></script>
+    <script src="./../sequence-viz/lifeflow.js"></script>
+    <script src="./../sequence-viz/timelines.js"></script>
+    <script src="./bower_components/momentjs/moment.js"></script>
+
+    <script>
+
+        d3.csv('./sampleData/hurricane.csv', function (data) {
+            var container = d3.select('body')
+                                .append('div')
+                                .append('svg')
+                                ;
+            edata = evtData()
+                    .entityIdProp('hur_id')
+                    .eventNameProp('status')
+                    .startDateProp('date')
+            //if (!eventNames) setEventNames(data);
+            var timelineData = edata.timelines(data);
+            var startRecs = _.chain(timelineData)
+                                .pluck('records')
+                                .map(_.first)
+                                .value();
+            var lifeflowNodes = lifeflowData()
+                    .eventNameProp('status')
+                    (startRecs, function(d) { return d.next() });
+
+            var chart = lifeflowChart()
+                    .entityIdProp('hur_id')
+                    .eventNameProp('status')
+                    .startDateProp('date')
+                    .unitProp(1000*60*60) // hours
+                    .eventNodeWidth(10000000)
+                    .height(window.innerHeight - 120)
+                    .width(window.innerWidth - 100)
+
+            container
+                    .datum(lifeflowNodes)
+                    .call(chart)
+        });
+    </script>
+</body>
+</html>

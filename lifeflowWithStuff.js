@@ -49,7 +49,7 @@ nv.models.lifeflow = function () {
                         .startDateProp(chart.startDateProp())
             if (chart.unitProp()) edata.unitProp(chart.unitProp());
             if (!eventNames) setEventNames(data);
-            if (!timelineData) timelineData = edata.timelines(data);
+            if (!timelineData) timelineData = edata.makeTimelines(data);
             var lifeflowNodes;
             if (chart.alignBy() === 'Start' || !chart.alignBy()) {
                 var startRecs = timelineData
@@ -82,28 +82,8 @@ nv.models.lifeflow = function () {
                         d.records.last().moment - 
                         d.records.first().moment);
                 });
-
-            moment.lang('en', {
-                    relativeTime : {
-                                future: "%s",
-                    past:   "%s",
-                    s:  "second",
-                    m:  "second",
-                    mm: "minute",
-                    h:  "minute",
-                    hh: "hour",
-                    d:  "hour",
-                    dd: "day",
-                    M:  "day",
-                    MM: "month",
-                    y:  "month",
-                    yy: "year"
-                    }
-            });
             x.domain([_.min(timelineDurations),_.max(timelineDurations)]);
-            var axisUnits = moment
-                .duration(x.domain()[1] - x.domain()[0])
-                .humanize();
+            var axisUnits = edata.durationUnits(x.domain()[1] - x.domain()[0]);
             var axisScale = d3.scale.linear()
                 .range(x.range())
                 .domain([
