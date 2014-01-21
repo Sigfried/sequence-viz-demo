@@ -35,15 +35,20 @@
     <script src="./bower_components/d3/d3.js"></script>
     <script src="./bower_components/underscore/underscore.js"></script>
     <script src="./bower_components/1670507/underscoreAddon.js"></script>
-    <script src="./../underscore-unchained/src/underscore-unchained.js"></script>
+    <script src="./bower_components/momentjs/moment.js"></script>
+    <script src="./../underscore-unchained/underscore-unchained.js"></script>
     <script src="./../supergroup/supergroup.js"></script>
     <script src="./../sequence-viz/evtData.js"></script>
     <script src="./../sequence-viz/lifeflowData.js"></script>
     <script src="./../sequence-viz/lifeflow.js"></script>
     <script src="./../sequence-viz/timelines.js"></script>
-    <script src="./bower_components/momentjs/moment.js"></script>
-    <script src="./lifeflowExtras.js"></script>
+    <script src="./../sequence-viz/lifeflowExtras.js"></script>
 
+    <script>
+        window.nv = {models:{}, utils:{}};
+    </script>
+    <script src="./nvd3_tooltip.js"></script>
+    <script src="./nvd3_utils.js"></script>
     <!--
     <script src="./timelines.js"></script>
     <script src="./lifeflowChart.js"></script>
@@ -51,7 +56,6 @@
 
     <!-- nvd3 stuff
     <script type="text/javascript" src="./nvd3/nv.d3.js"></script>
-    <script src="./nvd3/src/tooltip.js"></script>
     <script src="./nvd3/src/utils.js"></script>
     <script src="./legend.js"></script>
     <script src="./nvd3/src/models/axis.js"></script>
@@ -90,13 +94,20 @@
                     .eventOrder(eventOrder)
             //if (!eventNames) setEventNames(data);
             var timelineData = edata.makeTimelines(data);
+            timelineData.timelineUnit('hour');
             var startRecs = _.chain(timelineData)
                                 .pluck('records')
                                 .map(_.first)
                                 .value();
+            var startRecs = timelineData
+                                .pluck('records')
+                                .map(_.first);
+            var eventNodeWidth = 2 * 1000 * 60 * 60 * 24; // ends up in miliseconds!
             var lifeflowNodes = lifeflowData()
                     .eventNameProp('status')
-                    (startRecs, function(d) { return d.next() });
+                    .eventNodeWidth(eventNodeWidth)
+                    .timelines(timelineData)
+                    (startRecs /*, 'noflatten' */);
             var menuData = [
                 { label: 'Chart type', subs: [
                     { label: 'LifeFlow', action: showLifeflow, 
@@ -146,14 +157,20 @@
             }
             function showLifeflow() {
                 var chart = lifeflowChart()
-                        .entityIdProp('hur_id')
-                        .eventNameProp('status')
-                        .startDateProp('date')
+                        //.entityIdProp('hur_id')
+                        //.eventNameProp('status')
+                        //.startDateProp('date')
                         .eventNodeWidth(10000000)
                         .height(window.innerHeight - 120)
                         .width(window.innerWidth - 100)
                                     ;
-                chart.dispatch.on("eventNodeMouseover", extras.gMouseover);
+                chart.dispatch.on("lifeflowMouseover",
+                    function(lfChart, domNode, lfnode, i) {
+                        extras.showEvtDistribution(lfChart, domNode,
+                            lfnode, i);
+                        extras.nodeTooltip(lfChart, domNode, lfnode, i);
+                    });
+                chart.dispatch.on("lifeflowMouseout", extras.mouseout);
                 container
                         .datum(lifeflowNodes)
                         .call(chart)
