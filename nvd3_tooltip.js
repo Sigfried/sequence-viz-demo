@@ -99,9 +99,13 @@ window.nv.tooltip.* also has various helper methods.
             trowEnter.append("td")
                 .classed("key",true)
                 .html(function(p) {return p.key});
-            trowEnter.append("td")
-                .classed("value",true)
-                .html(function(p,i) { return valueFormatter(p.value,i) });
+            var tdValsEnter = trowEnter.selectAll('td.value')
+                .data(function(p) { return _.isArray(p.value) ?
+                    p.value : [p.value]; })
+                .enter()
+                .append('td').attr('class','value');
+            tdValsEnter
+                .html(function(val,i) { return valueFormatter(val,i) });
 
 
             trowEnter.selectAll("td").each(function(p) {
