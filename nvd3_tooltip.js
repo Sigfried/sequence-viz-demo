@@ -44,7 +44,6 @@ window.nv.tooltip.* also has various helper methods.
         ,   fixedTop = null //If not null, this fixes the top position of the tooltip.
         ,   classes = null  //Attaches additional CSS classes to the tooltip DIV that is created.
         ,   chartContainer = null   //Parent DIV, of the SVG Container that holds the chart.
-        ,   tooltipElem = null  //actual DOM element representing the tooltip.
         ,   position = {left: null, top: null}      //Relative position of the tooltip inside chartContainer.
         ,   enabled = true  //True -> tooltips are rendered. False -> don't render tooltips.
         //Generates a unique id when you create a new tooltip() object
@@ -71,59 +70,29 @@ window.nv.tooltip.* also has various helper methods.
 
             if (d == null) return '';
 
-            var table = d3.select(document.createElement("table"));
-            var theadEnter = table.selectAll("thead")
-                .data([d])
-                .enter().append("thead");
-            theadEnter.append("tr")
-                .append("td")
-                .attr("colspan",3)
-                .append("strong")
-                    .classed("x-value",true)
-                    .html(headerFormatter(d.value));
-
-            var tbodyEnter = table.selectAll("tbody")
-                .data([d])
-                .enter().append("tbody");
-            var trowEnter = tbodyEnter.selectAll("tr")
-                .data(function(p) { return p.series})
-                .enter()
-                .append("tr")
-                .classed("highlight", function(p) { return p.highlight})
-                ;
-
-            trowEnter.append("td")
-                .classed("legend-color-guide",true)
-                .append("div")
-                    .style("background-color", function(p) { return p.color});
-            trowEnter.append("td")
-                .classed("key",true)
-                .html(function(p) {return p.key});
-            var tdValsEnter = trowEnter.selectAll('td.value')
-                .data(function(p) { return _.isArray(p.value) ?
-                    p.value : [p.value]; })
-                .enter()
-                .append('td').attr('class','value');
-            tdValsEnter
-                .html(function(val,i) { return valueFormatter(val,i) });
-
-
-            trowEnter.selectAll("td").each(function(p) {
-                if (p.highlight) {
-                    var opacityScale = d3.scale.linear().domain([0,1]).range(["#fff",p.color]);
-                    var opacity = 0.6;
-                    d3.select(this)
-                        .style("border-bottom-color", opacityScale(opacity))
-                        .style("border-top-color", opacityScale(opacity))
-                        ;
-                }
-            });
-
-            var html = table.node().outerHTML;
-            if (d.footer !== undefined)
-                html += "<div class='footer'>" + d.footer + "</div>";
+            var html = '';
+            var maxValues = 1;
+            if (d.series instanceof Array) {
+                d.series.forEach(function(item, i) {
+                    html += "<tr>";
+                    html += "<td class='legend-color-guide'><div style='background-color: " + item.color + ";'></div></td>";
+                    html += "<td class='key'>" + item.key + ":</td>";
+                    if (item.value instanceof Array) {
+                        maxValues = Math.max(maxValues, item.value.length);
+                        item.value.forEach(function(value, j) {
+                            html += "<td class='value'>" + valueFormatter(value,i) + "</td>"; 
+                        });
+                        html += '</tr>';
+                    } else {
+                        html += "<td class='value'>" + valueFormatter(item.value,i) + "</td></tr>"; 
+                    }
+                });
+            }
+            html += "</tbody></table>";
+            html = "<table><thead><tr><td colspan='" + (maxValues + 2) +
+                    "'><strong class='x-value'>" + headerFormatter(d.value) + "</strong></td></tr></thead><tbody>" +
+                    html;
             return html;
-
         };
 
         var dataSeriesExists = function(d) {
@@ -187,7 +156,7 @@ window.nv.tooltip.* also has various helper methods.
             var left = position.left;
             var top = (fixedTop != null) ? fixedTop : position.top;
             var container = getTooltipContainer(contentGenerator(data));
-            tooltipElem = container;
+
             if (chartContainer) {
                 var svgComp = chartContainer.getElementsByTagName("svg")[0];
                 var boundRect = (svgComp) ? svgComp.getBoundingClientRect() : chartContainer.getBoundingClientRect();
@@ -195,16 +164,7 @@ window.nv.tooltip.* also has various helper methods.
                 if (svgComp) {
                     var svgBound = svgComp.getBoundingClientRect();
                     var chartBound = chartContainer.getBoundingClientRect();
-                    var svgBoundTop = svgBound.top;
-                    
-                    //Defensive code. Sometimes, svgBoundTop can be a really negative
-                    //  number, like -134254. That's a bug. 
-                    //  If such a number is found, use zero instead. FireFox bug only
-                    if (svgBoundTop < 0) {
-                        var containerBound = chartContainer.getBoundingClientRect();
-                        svgBoundTop = (Math.abs(svgBoundTop) > containerBound.height) ? 0 : svgBoundTop;
-                    } 
-                    svgOffset.top = Math.abs(svgBoundTop - chartBound.top);
+                    svgOffset.top = Math.abs(svgBound.top - chartBound.top);
                     svgOffset.left = Math.abs(svgBound.left - chartBound.left);
                 }
                 //If the parent container is an overflow <div> with scrollbars, subtract the scroll offsets.
@@ -228,11 +188,6 @@ window.nv.tooltip.* also has various helper methods.
             if (!arguments.length) return content;
             content = _;
             return nvtooltip;
-        };
-
-        //Returns tooltipElem...not able to set it.
-        nvtooltip.tooltipElem = function() {
-            return tooltipElem;
         };
 
         nvtooltip.contentGenerator = function(_) {
