@@ -44,9 +44,6 @@
     <script src="./../sequence-viz/timelines.js"></script>
     <script src="./../sequence-viz/lifeflowExtras.js"></script>
 
-    <script>
-        window.nv = {models:{}, utils:{}};
-    </script>
     <script src="./nvd3_tooltip.js"></script>
     <script src="./nvd3_utils.js"></script>
     <!--
@@ -166,14 +163,16 @@
                                     ;
                 chart.dispatch.on("lifeflowMouseover",
                     function(lfChart, domNode, lfnode, i) {
-                        extras.showEvtDistribution(lfChart, domNode,
+                        var gNode = domNode.parentNode; // event is on the rect now
+                        extras.showEvtDistribution(lfChart, gNode,
                             lfnode, i);
-                        extras.nodeTooltip(lfChart, domNode, lfnode, i);
+                        extras.nodeTooltip(lfChart, gNode, lfnode, i);
                     });
                 chart.dispatch.on("lifeflowMouseout", extras.mouseout);
                 container
                         .datum(lifeflowNodes)
-                        .call(chart)
+                        .call(chart);
+                extras.dispatch.on('distNodeMouseover', extras.distNodeTooltip);
             }
             function showTimelines() {
                 var chart = timelineChart()
