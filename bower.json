@@ -19,10 +19,9 @@
     "tests"
   ],
   "dependencies": {
-    "nvd3": "~1.1.15-beta",
     "sequence-viz": "~0.0.2",
     "jQuery-contextMenu": "https://github.com/medialize/jQuery-contextMenu.git#~1.6.5",
     "underscore-unchained": "~0.1.1",
-    "momentjs": "~2.5.0"
+    "momentjs": "~2.5.0",
   }
 }
