@@ -47,7 +47,7 @@
         env.addReporter(reporter)
         env.execute()
         */
-        var eventNodeWidth = 2 * 1000 * 60 * 60 * 24; // ends up in miliseconds!
+        var eventNodeWidth = 10;  // pixels now
         // need to do eventNodeWidth in pixels, not time units!!!!!
         var alignmentLineWidth = 1 * 1000 * 60 * 60 * 24;
         var csv =   "id,event,date\n" +
@@ -86,13 +86,14 @@
 
         nv.addGraph(function() {
             var chart = nv.models.lifeflowChart()
-                            ;
+                        .eventNodeWidth(eventNodeWidth);
 
             chart.xAxis
                 .tickFormat(function(d) { return d3.time.format('%x')(new Date(d)) });
 
             chart.yAxis
                 .tickFormat(d3.format(','));
+
 
             stuff.container.datum(stuff.nodeList)
                 .transition().duration(500).call(chart);
