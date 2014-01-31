@@ -33,58 +33,16 @@ describe('Lifeflow with doodads', function() {
                 .timelines(bucket.timelines)
                 (bucket.startRecs, 'noflatten');
         bucket.nodeList = bucket.nodeTree.flattenTree();
-        bucket.container = d3.select('body')
-                        .append('div')
-                            .style('height','100%')
-                        .append('svg')
+        d3.select('body')
+            .selectAll('div.lifeflow-test')
+            .data(['stub'])
+            .enter().append('div')
+                .attr('class', 'lifeflow-test')
+                .style('height','100%')
+            .append('svg')
+        bucket.container = d3.select('div.lifeflow-test>svg');
         bucket.done = done;
         makeChart(bucket);
-
-        it('should make a chart!', function() {
-            expect(bucket.chart).toBeDefined();
-        });
-        it('should have some g.evet-nodes', function() {
-            var nodes = bucket.container
-                .selectAll('g.event-node>rect');
-            expect(nodes.size()).toBeGreaterThan(0);
-        });
-        var nvd3_describe = (testPage === 'nvd3') ? describe : xdescribe;
-        nvd3_describe('with nvd3', function() {
-            beforeEach(function() {
-                var extras = lifeflowExtras();
-                //chart.dispatch.on('lifeflowMouseover', extras.nodeTooltip);
-                self.chart.dispatch.on("lifeflowMouseover",
-                    function(lfChart, domNode, lfnode, i) {
-                        var gNode = domNode.parentNode; // event is on the rect now
-                        extras.showEvtDistribution(lfChart, gNode,
-                            lfnode, i);
-                        //extras.nodeTooltip(lfChart, gNode, lfnode, i);
-                        extras.nodeDumpTooltip(lfChart, gNode, lfnode, i);
-                    });
-                extras.dispatch.on('distNodeMouseover', extras.distNodeTooltip);
-                    //function(chrt, domNode, lfNode, i) { alert(d); };
-                self.chart.dispatch.on("lifeflowMouseout", nv.tooltip.cleanup);
-            });
-            it('should show a tooltip', function() {
-                var e = document.createEvent('UIEvents');
-                e.initUIEvent('mouseover', true, true );
-                var nodes = self.container
-                    .selectAll('g.event-node>rect');
-                nodes.node().dispatchEvent(e);
-                expect(d3.selectAll('div.nvtooltip').size())
-                    .toBe(1);
-            });
-            it('should hide the tooltip', function() {
-                var e = document.createEvent('UIEvents');
-                e.initUIEvent('mouseout', true, true );
-                var nodes = self.container
-                    .selectAll('g.event-node>rect');
-                nodes.node().dispatchEvent(e);
-                expect(d3.selectAll('div.nvtooltip').size())
-                    .toBe(0);
-            });
-        });
-
         return;
         self.chart = lifeflowChart()
             .eventNodeWidth(100000000)
@@ -106,4 +64,36 @@ describe('Lifeflow with doodads', function() {
         extras.dispatch.on('distNodeMouseover', extras.distNodeTooltip);
             //function(chrt, domNode, lfNode, i) { alert(d); };
     });
+    describe('all scenarios', function() {
+        it('should make a chart!', function() {
+            expect(bucket.chart).toBeDefined();
+        });
+        it('should have some g.evet-nodes', function() {
+            var nodes = bucket.container
+                .selectAll('g.event-node>rect');
+            expect(nodes.size()).toBeGreaterThan(0);
+        });
+        var nvd3_describe = (testPage === 'nvd3') ? describe : xdescribe;
+        nvd3_describe('with nvd3', function() {
+            it('should show a tooltip', function() {
+                var e = document.createEvent('UIEvents');
+                e.initUIEvent('mouseover', true, true );
+                var nodes = bucket.container
+                    .selectAll('g.event-node>rect');
+                nodes.node().dispatchEvent(e);
+                expect(d3.selectAll('div.nvtooltip').size())
+                    .toBe(1);
+            });
+            it('should hide the tooltip', function() {
+                var e = document.createEvent('UIEvents');
+                e.initUIEvent('mouseout', true, true );
+                var nodes = bucket.container
+                    .selectAll('g.event-node>rect');
+                nodes.node().dispatchEvent(e);
+                expect(d3.selectAll('div.nvtooltip').size())
+                    .toBe(0);
+            });
+        });
+    });
+
 });

@@ -20,6 +20,7 @@
     <script src="./sequence-viz/bower_components/underscore/underscore.js"></script>
     <script src="./sequence-viz/bower_components/1670507/underscoreAddon.js"></script>
     <script src="./sequence-viz/bower_components/momentjs/moment.js"></script>
+
     <script src="./underscore-unchained/underscore-unchained.js"></script>
     <script src="./supergroup/supergroup.js"></script>
     <script src="./sequence-viz/evtData.js"></script>
@@ -47,29 +48,54 @@
         env.addReporter(reporter)
         env.execute()
         */
+        var firstTime = true;
+        var holdChart;
         function makeChart(bucket) {
-            nv.addGraph(function() {
-                var chart = nv.models.lifeflowChart()
-                            .eventNodeWidth(bucket.eventNodeWidth);
+            if (firstTime) {
+                firstTime = false;
+                nv.addGraph(
+                    function() {
+                        var chart = nv.models.lifeflowChart()
+                                    .eventNodeWidth(bucket.eventNodeWidth);
 
-                chart.xAxis
-                    .tickFormat(function(d) { return d3.time.format('%x')(new Date(d)) });
+                        chart.xAxis
+                            .tickFormat(function(d) { return d3.time.format('%x')(new Date(d)) });
 
-                chart.yAxis
-                    .tickFormat(d3.format(','));
+                        chart.yAxis
+                            .tickFormat(d3.format(','));
 
 
-                bucket.container.datum(bucket.nodeList)
-                    .transition().duration(500).call(chart);
+                        bucket.container.datum(bucket.nodeList)
+                            .transition().duration(500).call(chart);
 
-                nv.utils.windowResize(chart.update);
+                        nv.utils.windowResize(chart.update);
 
-                bucket.chart = chart;
+                        var extras = lifeflowExtras();
+                        //chart.dispatch.on('lifeflowMouseover', extras.nodeTooltip);
+                        chart.lifeflow.dispatch.on("lifeflowMouseover",
+                            function(lfChart, domNode, lfnode, i) {
+                                var gNode = domNode.parentNode; // event is on the rect now
+                                extras.showEvtDistribution(lfChart, gNode,
+                                    lfnode, i);
+                                //extras.nodeTooltip(lfChart, gNode, lfnode, i);
+                                extras.nodeDumpTooltip(lfChart, gNode, lfnode, i);
+                            });
+                        extras.dispatch.on('distNodeMouseover', extras.distNodeTooltip);
+                            //function(chrt, domNode, lfNode, i) { alert(d); };
+                        chart.lifeflow.dispatch.on("lifeflowMouseout", nv.tooltip.cleanup);
+                        return chart;
+                    }, 
+                    function(chart) {
+                        holdChart = bucket.chart = chart;
+                        bucket.done();
+                    }
+                );
+            } else {
+                bucket.chart = holdChart;
                 bucket.done();
-                return chart;
-            });
-        }
-        jasmine.getEnv().execute();
+            }
+        };
+        //jasmine.getEnv().execute();
 
     </script>
 </body>
