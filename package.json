@@ -1,0 +1,29 @@
+{
+  "name": "sequence-viz-demo",
+  "version": "0.0.0",
+  "description": "html pages and tests for demoing sequence-viz modules",
+  "main": "nvd3-bundle-test.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Sigfried/sequence-viz-demo.git"
+  },
+  "keywords": [
+    "temporal",
+    "visualization",
+    "d3",
+    "lifeflow"
+  ],
+  "author": "Sigfried Gold",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sigfried/sequence-viz-demo/issues"
+  },
+  "homepage": "https://github.com/Sigfried/sequence-viz-demo",
+  "dependencies": {}
+}

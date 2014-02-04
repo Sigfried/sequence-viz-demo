@@ -1,4 +1,15 @@
 'use strict()';
+
+//var d3 = require('d3');
+//var nv = require('nvd3');
+var seqVis = require('sequence-viz');
+var _ = require('supergroup');
+var moment = require('moment');
+var evtData = seqViz.evtData;
+//var lifeflowData = require('../sequence-viz/lifeflowData');
+//var lifeflow = require('../sequence-viz/lifeflow.js');
+var seqVizSpec = require('sequence-viz/test/sequence-viz-spec.js');
+
 describe('Lifeflow with doodads', function() {
     var bucket = {};
     beforeEach(function(done) {

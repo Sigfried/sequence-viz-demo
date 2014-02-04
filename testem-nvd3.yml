@@ -5,13 +5,13 @@ port: 7352
 launch_in_dev:
     - Chrome
 src_files:
-    - './sequence-viz/temp/underscore/underscore.js'
-    - './sequence-viz/temp/1670507/underscoreAddon.js'
-    - './sequence-viz/temp/underscore-unchained/underscore-unchained.js'
-    - './sequence-viz/temp/supergroup/supergroup.js'
-    - './sequence-viz/node_modules/d3/d3.js'
-    - './sequence-viz/bower_components/momentjs/moment.js'
-    - './sequence-viz/evtData.js'
+#   - './sequence-viz/temp/underscore/underscore.js'
+#   - './sequence-viz/temp/1670507/underscoreAddon.js'
+#   - './sequence-viz/temp/underscore-unchained/underscore-unchained.js'
+#   - './sequence-viz/temp/supergroup/supergroup.js'
+#   - './sequence-viz/node_modules/d3/d3.js'
+#   - './sequence-viz/bower_components/momentjs/moment.js'
+#   - './sequence-viz/evtData.js'
 #   - './sequence-viz/evtData.js'
 #   - './sequence-viz/lifeflowData.js'
 #   - './sequence-viz/lifeflow.js'

@@ -39,43 +39,6 @@
         env.addReporter(reporter)
         env.execute()
         */
-        var eventNodeWidth = 10;  // pixels now
-        // need to do eventNodeWidth in pixels, not time units!!!!!
-        var alignmentLineWidth = 1 * 1000 * 60 * 60 * 24;
-        var csv =   "id,event,date\n" +
-                    "1,A,1/1/1950\n" +
-                    "1,B,3/2/1950\n" +
-                    "1,B,3/12/1950\n" +
-                    "2,A,1/1/1960\n" +
-                    "2,B,1/16/1960\n" +
-                    "2,C,3/31/1960\n" +
-                    "2,B,6/29/1960\n" +
-                    "3,B,1/1/1970\n" +
-                    "3,A,1/11/1970\n" +
-                    "3,B,5/11/1970\n" +
-                    "3,B,6/10/1970\n";
-        var data = d3.csv.parse(csv);
-        var eventOrder = ['A','B','C'];
-        var stuff = {};
-        stuff.edata = evtData()
-                .entityIdProp('id')
-                .eventNameProp('event')
-                .startDateProp('date')
-        stuff.timelines = stuff.edata.makeTimelines(data);
-        stuff.timelines.timelineUnit('day');
-        stuff.startRecs = stuff.timelines
-                            .pluck('records')
-                            .map(_.first);
-        stuff.nodeTree = lifeflowData()
-                .eventNameProp('event')
-                .timelines(stuff.timelines)
-                (stuff.startRecs, 'noflatten');
-        stuff.nodeList = stuff.nodeTree.flattenTree();
-        stuff.container = d3.select('body')
-                        .append('div')
-                            .style('height','100%')
-                        .append('svg')
-
         jasmine.getEnv().execute();
 
     </script>

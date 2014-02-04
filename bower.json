@@ -19,9 +19,11 @@
     "tests"
   ],
   "dependencies": {
-    "sequence-viz": "~0.0.2",
     "jQuery-contextMenu": "https://github.com/medialize/jQuery-contextMenu.git#~1.6.5",
-    "underscore-unchained": "~0.1.1",
-    "momentjs": "~2.5.0",
+    "moment": "momentjs#~2.5.1",
+    "supergroup": "~0.0.2",
+    "underscore-unchained": "~0.1.2",
+    "sequence-viz": "~0.0.2",
+    "d3": "d3#~3.4.1"
   }
 }
