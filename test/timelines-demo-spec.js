@@ -2,11 +2,10 @@
 var seqViz = require('sequence-viz');
 var _ = seqViz.supergroup;
 var evtData = seqViz.evtData;
-var lifeflowData = seqViz.lifeflowData;
 //var moment = require('moment');
 //var seqVizSpec = require('sequence-viz/test/sequence-viz-spec.js');
 
-describe('Lifeflow with doodads', function() {
+describe('Timelines with doodads', function() {
     var bucket = {};
     beforeEach(function(done) {
         bucket.eventNodeWidth = 10;  // pixels now
@@ -35,19 +34,14 @@ describe('Lifeflow with doodads', function() {
         bucket.startRecs = _(bucket.timelines)
                             .pluck('records')
                             .map(_.first).value();
-        bucket.nodeTree = lifeflowData()
-                .eventNameProp('event')
-                .timelines(bucket.timelines)
-                (bucket.startRecs, 'noflatten');
-        bucket.nodeList = bucket.nodeTree.flattenTree();
         d3.select('body')
-            .selectAll('div.lifeflow-test')
+            .selectAll('div.timelines-test')
             .data(['stub'])
             .enter().append('div')
-                .attr('class', 'lifeflow-test')
+                .attr('class', 'timelines-test')
                 .style('height','100%')
             .append('svg')
-        bucket.container = d3.select('div.lifeflow-test>svg');
+        bucket.container = d3.select('div.timelines-test>svg');
         bucket.done = done;
         makeChart(bucket);
     });

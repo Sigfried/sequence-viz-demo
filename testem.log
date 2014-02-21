@@ -1,0 +1,9 @@
+info Test'em starting... 
+info Hook before_tests started 
+info Hook before_tests finished 
+info Launching Chrome 
+info spawning: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome - ["--user-data-dir=/tmp/testem.chrome","--no-default-browser-check","--no-first-run","http://localhost:7352/7574"] 
+info New client connected: Chrome 32.0 7574 
+info Hook after_tests started 
+info Hook after_tests finished 
+info 

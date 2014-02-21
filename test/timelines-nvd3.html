@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>My Test Page</title>
+    <title>Timelines Test Page</title>
     <link rel="stylesheet" href="./test/jasmine2.css">
     <script> var testPage = 'nvd3';</script>
     <script src="./test/jasmine2.js"></script>
@@ -13,11 +13,12 @@
     <script src="./node_modules/nvd3/nv.d3.js"></script>
     <link href="./bower_components/nvd3/src/nv.d3.css" rel="stylesheet" type="text/css">
     <link href="./menu.css" rel="stylesheet" type="text/css">
-    <script src="./test-nvd3-bundle.js"></script>
+    <script src="./test-timelines-nvd3-bundle.js"></script>
+    <script src="./timelinesChart.js"></script>
+    <script src="./timelines.js"></script>
     <script>
         var _ = seqViz.supergroup;
     </script>
-    <script src="./lifeflowExtras.js"></script>
 
     <style>
         svg#main { padding-top: 70px; }
@@ -43,24 +44,12 @@
                 firstTime = false;
                 nv.addGraph(
                     function() {
-                        var chart = nv.models.lifeflowChart()
-                                    .eventNodeWidth(bucket.eventNodeWidth);
-
-                        chart.xAxis
-                            .tickFormat(function(d) { return d3.time.format('%x')(new Date(d)) });
-
-                        chart.yAxis
-                            .tickFormat(d3.format(','));
-
-
-                        bucket.container.datum(bucket.nodeList)
+                        var chart = nv.models.timelinesChart()
+                        bucket.container.data(bucket.timelines)
                             .transition().duration(500).call(chart);
 
                         nv.utils.windowResize(chart.update);
-
-                        var extras = lifeflowExtras();
-                        //chart.dispatch.on('lifeflowMouseover', extras.nodeTooltip);
-                        chart.lifeflow.dispatch.on("lifeflowMouseover",
+                        chart.timelines.dispatch.on("timelinesMouseover",
                             function(lfChart, domNode, lfnode, i) {
                                 var gNode = domNode.parentNode; // event is on the rect now
                                 extras.showEvtDistribution(lfChart, gNode,
@@ -70,7 +59,7 @@
                             });
                         extras.dispatch.on('distNodeMouseover', extras.distNodeTooltip);
                             //function(chrt, domNode, lfNode, i) { alert(d); };
-                        chart.lifeflow.dispatch.on("lifeflowMouseout", nv.tooltip.cleanup);
+                        chart.timelines.dispatch.on("timelinesMouseout", nv.tooltip.cleanup);
                         return chart;
                     }, 
                     function(chart) {

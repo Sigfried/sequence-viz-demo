@@ -1,0 +1,11 @@
+test_page: timelines-nvd3.html
+framework: jasmine2
+routes:
+    '/timelines-nvd3.html' : 'test/timelines-nvd3.html'
+port: 7353
+launch_in_dev:
+    - Chrome
+src_files:
+    - './test-timelines-nvd3-bundle.js'
+before_tests: "browserify test-timelines-nvd3.js -o test-timelines-nvd3-bundle.js"
+on_exit: "rm test-nvd3-bundle.js"
