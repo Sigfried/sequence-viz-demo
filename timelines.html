@@ -33,22 +33,12 @@
     </style>
 
 
-    <script type="text/javascript" src="./d3/d3.js"></script>
-    <script type="text/javascript" src="./underscore.js"></script>
-    <script type="text/javascript" src="./jquery-1.9.1.js"></script>
-    <script type="text/javascript" src="./enlightened-data/enlightened-data.js"></script>
-    <script type="text/javascript" src="./nvd3/nv.d3.js"></script>
-    <script src="./nvd3/src/tooltip.js"></script>
-    <script src="./nvd3/src/utils.js"></script>
-    <script src="./nvd3/src/models/legend.js"></script>
-    <script src="./nvd3/src/models/axis.js"></script>
-    <script src="./evtData.js"></script>
-    <script src="./timelines.js"></script>
-    <script src="./lifeflow.js"></script>
-    <script src="./timelinesChart.js"></script>
+    <script src="./bundle.js"></script>
+
 
     <script>
 
+        /*
     (function($){
         function getParameterByName(name) {
             name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -58,10 +48,10 @@
         }
         $.getParameterByName = getParameterByName;
     })(jQuery);
+    */
 
-    $(document).ready(function() {
+    //$(document).ready(function() {
         d3.csv('./sampleData/huricane.csv', function (data) {
-        //d3.csv('./study_data_new.csv', function (data) {
 
             /*
             if (!$.getParameterByName("fullData")) {
@@ -121,7 +111,7 @@
                     .datum(data)
                     .call(timelinesChart);
         });
-    });
+    //});
     </script>
 </body>
 </html>

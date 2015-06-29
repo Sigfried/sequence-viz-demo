@@ -1,8 +1,9 @@
 'use strict()';
 
-//var d3 = require('d3');
+var d3 = require('d3');
 //var nv = require('nvd3');
-var seqVis = require('sequence-viz');
+var nv = require('nvd3');
+var seqViz = require('sequence-viz');
 var _ = require('supergroup');
 var moment = require('moment');
 var evtData = seqViz.evtData;

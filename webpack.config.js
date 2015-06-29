@@ -1,16 +1,13 @@
 module.exports = {
-    entry: './test-nvd3.js',
+    entry: './sequence-viz-demo.js',
     output: {
         path: './',
-        filename: 'test-nvd3-bundle.js',
+        filename: 'bundle.js',
     },
     resolve: {
         alias: { 
-            moment: 'moment/moment.js',
-            d3: 'd3/d3.js',
-            nvd3: 'nvd3/nv.d3.js'
         },
-        modulesDirectories: ['node_modules', 'bower_components']
+        modulesDirectories: ['node_modules']
     },
     //devtool:"eval",
     devtool:"source-map",
